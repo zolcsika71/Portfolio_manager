@@ -2,6 +2,11 @@
 
 import os
 import sqlite3
+import logging
+from logger.logging_config import setup_logging
+
+setup_logging()
+logger = logging.getLogger('db')
 
 
 class DatabaseManager:
@@ -16,62 +21,73 @@ class DatabaseManager:
         if not self.db_exists:
             self.create_database()
         else:
-            print("Database already exists")
+            logger.info("Database already exists")
 
     def create_database(self):
+        logger.info("Creating database")
+        try:
+            self._create_database()
+            logger.info("Database created successfully")
+            return True
+        except sqlite3.Error as e:
+            logger.error(f"Error creating database: {e}")
+            return False
+
+
+    def _create_database(self):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         create_info_table = """
-        CREATE TABLE IF NOT EXISTS Info (
-            Cash INTEGER,
-            EUR REAL,
-            USD REAL
-        );
-        """
+            CREATE TABLE IF NOT EXISTS Info (
+                Cash INTEGER,
+                EUR REAL,
+                USD REAL
+            );
+            """
         create_portfolio_current_table = """
-        CREATE TABLE IF NOT EXISTS Portfolio_current (
-            ISIN TEXT(30),
-            Asset_class TEXT(100),
-            Asset TEXT(100),
-            Currency TEXT(3),
-            Percent REAL,
-            HUF_invested INTEGER
-        );
-        """
+            CREATE TABLE IF NOT EXISTS Portfolio_current (
+                ISIN TEXT(30),
+                Asset_class TEXT(100),
+                Asset TEXT(100),
+                Currency TEXT(3),
+                Percent REAL,
+                HUF_invested INTEGER
+            );
+            """
         create_portfolio_suggested_table = """
-        CREATE TABLE IF NOT EXISTS Portfolio_suggested (
-            ISIN TEXT(30),
-            Portfolio_type TEXT(100),
-            Asset_class TEXT(100),
-            Asset TEXT(100),
-            Currency TEXT(3),
-            Percent REAL,
-            HUF_invested INTEGER
-        );
-        """
+            CREATE TABLE IF NOT EXISTS Portfolio_suggested (
+                ISIN TEXT(30),
+                Portfolio_type TEXT(100),
+                Asset_class TEXT(100),
+                Asset TEXT(100),
+                Currency TEXT(3),
+                Percent REAL,
+                HUF_invested INTEGER
+            );
+            """
         create_sell_table = """
-        CREATE TABLE IF NOT EXISTS Sell (
-            ISIN TEXT(30),
-            Portfolio_type TEXT(100),
-            Asset_class TEXT(100),
-            Asset TEXT(100),
-            Currency TEXT(3),
-            Units REAL,
-            Done INTEGER
-        );
-        """
+            CREATE TABLE IF NOT EXISTS Sell (
+                ISIN TEXT(30),
+                Portfolio_type TEXT(100),
+                Asset_class TEXT(100),
+                Asset TEXT(100),
+                Currency TEXT(3),
+                Units REAL,
+                Done INTEGER
+            );
+            """
         create_buy_table = """
-        CREATE TABLE IF NOT EXISTS Buy (
-            ISIN TEXT(30),
-            Portfolio_type TEXT(100),
-            Asset_class TEXT(100),
-            Asset TEXT(100),
-            Currency TEXT(3),
-            HUF_to_invest INTEGER,
-            Done INTEGER
-        );
-        """
+            CREATE TABLE IF NOT EXISTS Buy (
+                ISIN TEXT(30),
+                Portfolio_type TEXT(100),
+                Asset_class TEXT(100),
+                Asset TEXT(100),
+                Currency TEXT(3),
+                HUF_to_invest INTEGER,
+                Done INTEGER
+            );
+            """
 
         cursor.execute(create_info_table)
         cursor.execute(create_portfolio_current_table)
@@ -81,5 +97,3 @@ class DatabaseManager:
 
         conn.commit()
         conn.close()
-        print("Database and tables created successfully.")
-        return True

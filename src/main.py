@@ -1,22 +1,23 @@
-# main.py
-import json
-from db.create_db import DatabaseManager
-from gui.app import PortfolioManagerApp
+# Portfolio_manager/src/main.py
+
+import logging
+from logger.logging_config import setup_logging
+from src.db.create_db import DatabaseManager
+
+setup_logging()
+logger = logging.getLogger('main')
 
 
 def main():
-    # Create the database
-    db_manager = DatabaseManager()
-
-    # Load menu structure from JSON file
-    with open('src/gui/structure.json', 'r') as file:
-        menu_structure = json.load(file)
-
-    # Initialize and run the GUI
-    app = PortfolioManagerApp(menu_structure)
-    app.run()
+    logger.info("Application started")
+    try:
+        DatabaseManager()
+        logger.info("Application running")
+    except Exception as e:
+        logger.error("An error occurred", e, exc_info=True)
+    finally:
+        logger.info("Application ended")
 
 
 if __name__ == "__main__":
     main()
-
