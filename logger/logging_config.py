@@ -7,6 +7,18 @@ LOG_DIR = os.path.join(os.path.dirname(__file__), 'logs')
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
+
+# Function to create a file handler that overwrites the log file each run
+def get_file_handler(filename):
+    return {
+        'level': 'DEBUG',
+        'class': 'logging.FileHandler',
+        'filename': filename,
+        'mode': 'w',  # overwrite mode
+        'formatter': 'standard',
+    }
+
+
 LOGGING_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -32,18 +44,8 @@ LOGGING_CONFIG = {
             'class': 'logging.StreamHandler',
             'formatter': 'colored',
         },
-        'file_db': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'db.log'),
-            'formatter': 'standard',
-        },
-        'file_combined': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(os.path.dirname(__file__), 'Portfolio_manager.log'),
-            'formatter': 'standard',
-        },
+        'file_db': get_file_handler(os.path.join(LOG_DIR, 'db.log')),
+        'file_combined': get_file_handler(os.path.join(os.path.dirname(__file__), 'Portfolio_manager.log')),
     },
     'loggers': {
         '': {
