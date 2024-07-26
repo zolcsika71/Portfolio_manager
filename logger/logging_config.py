@@ -45,6 +45,8 @@ LOGGING_CONFIG = {
             'formatter': 'colored',
         },
         'file_db': get_file_handler(os.path.join(LOG_DIR, 'db.log')),
+        'file_gui_build': get_file_handler(os.path.join(LOG_DIR, 'gui_build.log')),
+        'file_gui_get_structure': get_file_handler(os.path.join(LOG_DIR, 'gui_get_structure.log')),
         'file_combined': get_file_handler(os.path.join(os.path.dirname(__file__), 'Portfolio_manager.log')),
     },
     'loggers': {
@@ -55,6 +57,16 @@ LOGGING_CONFIG = {
         },
         'db': {
             'handlers': ['file_db'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'gui.build': {
+            'handlers': ['file_gui_build'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'gui.get_structure': {
+            'handlers': ['file_gui_get_structure'],
             'level': 'DEBUG',
             'propagate': False
         },
