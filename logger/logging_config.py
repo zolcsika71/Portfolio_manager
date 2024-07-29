@@ -60,12 +60,12 @@ LOGGING_CONFIG = {
             'level': 'DEBUG',
             'propagate': False
         },
-        'gui.build': {
+        'gui_build': {
             'handlers': ['file_gui_build'],
             'level': 'DEBUG',
             'propagate': False
         },
-        'gui.get_structure': {
+        'gui_get_structure': {
             'handlers': ['file_gui_get_structure'],
             'level': 'DEBUG',
             'propagate': False

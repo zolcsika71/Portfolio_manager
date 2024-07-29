@@ -45,6 +45,7 @@ class DatabaseManager:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         self._create_tables(cursor)
+        conn.close()
 
     @staticmethod
     def _create_tables(cursor):

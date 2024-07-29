@@ -15,10 +15,10 @@ def main():
         logger.info("Database module is running")
         DatabaseManager()
         logger.info("GUI build module is running")
-        MainWindow.run_gui()
+        MainWindow()
 
     except Exception as e:
-        logger.error("An error occurred", e, exc_info=True)
+        logger.error("An error occurred", exc_info=True)  # Corrected line
     finally:
         logger.info("Application ended")
 

@@ -11,11 +11,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         logger.info("Initializing the main window.")
-        structure = GuiStructureLoader('gui/structure.json')
-        gui_structure = structure['gui']
-
-        self.setWindowTitle(structure['title'])
-        logger.debug(f"Window title set to {structure['title']}")
+        self.run_gui()
+        gui_structure = GuiStructureLoader.structure
+        self.setWindowTitle(gui_structure['title'])
+        logger.debug(f"Window title set to {gui_structure['title']}")
 
         menu_bar = self.menuBar()
         for menu_item in gui_structure['main_menu_items']:
