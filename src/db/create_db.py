@@ -3,14 +3,16 @@
 import os
 import sqlite3
 import logging
-from logger.logging_config import setup_logging
+from logger.logging_config import LoggerConfig
 from src.db.table_definitions import SQL_QUERIES  # Import the SQL_QUERIES
 
-setup_logging()
+# Setup logging
+logger_config = LoggerConfig()
+logger_config.setup_logging()
 logger = logging.getLogger('db')
 
 
-class DatabaseManager:
+class DatabaseInitializer:
     """Class to manage database creation and connection."""
 
     def __init__(self):
@@ -56,4 +58,4 @@ class DatabaseManager:
 
 
 if __name__ == "__main__":
-    DatabaseManager()
+    DatabaseInitializer()

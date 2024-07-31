@@ -1,50 +1,108 @@
-import sys
-import logging
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenuBar, QMenu, QAction, QPushButton
-from .get_structure import GuiStructureLoader
+import json
+from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QMenu, QMessageBox
 from .styling import set_styling
+import logging
+from logger.logging_config import LoggerConfig
 
-logger = logging.getLogger('gui_build')
+
+# Setup logging
+logger_config = LoggerConfig()
+logger_config.setup_logging()
+logger = logging.getLogger('build')
 
 
+def load_menu_structure(file_path):
+    """
+    Load the menu structure from a JSON file.
+
+    :param file_path: Path to the JSON file.
+    :return: Dictionary containing the menu structure.
+    """
+    logger.info(f"Loading menu structure from {file_path}")
+    with open(file_path, 'r') as file:
+        return json.load(file)["gui"]
+
+
+# noinspection PyUnresolvedReferences
+def create_menu_action(name):
+    """
+    Create a menu action with the given name.
+
+    :param name: Name of the menu action.
+    :return: A function to be called when the menu action is triggered.
+    """
+
+    def menu_action():
+        logger.debug(f"{name} selected")
+
+    return menu_action
+
+
+# noinspection PyUnresolvedReferences
 class MainWindow(QMainWindow):
-    def __init__(self):
+    """
+    Main window class for the application.
+    """
+
+    def __init__(self, menu_structure):
+        """
+        Initialize the main window.
+
+        :param menu_structure: Dictionary containing the menu structure.
+        """
         super().__init__()
-        logger.info("Initializing the main window.")
-        self.run_gui()
-        gui_structure = GuiStructureLoader.structure
-        self.setWindowTitle(gui_structure['title'])
-        logger.debug(f"Window title set to {gui_structure['title']}")
-
-        menu_bar = self.menuBar()
-        for menu_item in gui_structure['main_menu_items']:
-            self.create_menu(menu_bar, menu_item)
-
+        self.setWindowTitle('Portfolio Manager')
+        self.setGeometry(100, 100, 600, 400)
         set_styling(self)
-        logger.info("Main window initialized successfully.")
+        menu_bar = self.menuBar()
+        self.create_menus(menu_bar, menu_structure)
+        exit_action = QAction('Exit', self)
+        exit_action.triggered.connect(self.confirm_exit)
+        menu_bar.addAction(exit_action)
 
-    # noinspection PyUnresolvedReferences
-    def create_menu(self, root, menu_item):
-        menu = root.addMenu(menu_item["name"])
-        logger.debug(f"Creating menu: {menu_item['name']}")
-        if menu_item.get("sub_menu_items"):
-            for sub_item in menu_item["sub_menu_items"]:
-                self.create_menu(menu, sub_item)
-        else:
-            action = QAction(menu_item["name"], self)
-            action.triggered.connect(lambda: print(f"{menu_item['name']} clicked"))
-            menu.addAction(action)
-            logger.debug(f"Action added for menu item: {menu_item['name']}")
+    def create_menus(self, menu_bar, menu_structure):
+        """
+        Create menus dynamically from the given structure.
 
-    @staticmethod
-    def run_gui():
-        logger.info("Starting the GUI application.")
-        app = QApplication(sys.argv)
-        main_window = MainWindow()
-        main_window.show()
-        logger.info("GUI application started.")
-        sys.exit(app.exec_())
+        :param menu_bar: The main menu bar.
+        :param menu_structure: Dictionary containing the menu structure.
+        """
+        logger.info("Creating menus")
+        for main_menu in menu_structure["main_menu_items"]:
+            if main_menu["available"]:
+                if main_menu["sub_menu_items"]:
+                    menu = menu_bar.addMenu(main_menu["name"])
+                    self.add_sub_menus(menu, main_menu["sub_menu_items"])
+                else:
+                    action = QAction(main_menu["name"], self)
+                    action.triggered.connect(create_menu_action(main_menu["name"]))
+                    menu_bar.addAction(action)
 
+    def add_sub_menus(self, parent_menu, sub_menu_items):
+        """
+        Add sub-menus to a parent menu.
 
-if __name__ == "__main__":
-    MainWindow()
+        :param parent_menu: The parent menu to which sub-menus will be added.
+        :param sub_menu_items: List of sub-menu items.
+        """
+        logger.info("Adding sub-menus")
+        for sub_menu in sub_menu_items:
+            if sub_menu["available"]:
+                if "sub_menu_items" in sub_menu and sub_menu["sub_menu_items"]:
+                    menu = QMenu(sub_menu["name"], self)
+                    parent_menu.addMenu(menu)
+                    self.add_sub_menus(menu, sub_menu["sub_menu_items"])
+                else:
+                    action = QAction(sub_menu["name"], self)
+                    action.triggered.connect(create_menu_action(sub_menu["name"]))
+                    parent_menu.addAction(action)
+
+    def confirm_exit(self):
+        """
+        Confirm exit action.
+        """
+        logger.info("Confirming exit")
+        reply = QMessageBox.question(self, 'Confirmation',
+                                     "Are you sure you want to exit?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            qApp.quit()

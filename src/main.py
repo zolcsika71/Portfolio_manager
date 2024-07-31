@@ -1,24 +1,29 @@
-# Portfolio_manager/src/main.py
+# main.py
 
+from app_manager import ApplicationManager
+from logger.logging_config import LoggerConfig
 import logging
-from logger.logging_config import setup_logging
-from src.db.create_db import DatabaseManager
-from src.gui.build import MainWindow
+import sys
+from PyQt5.QtCore import QCoreApplication
 
-setup_logging()
+# Setup logging
+logger_config = LoggerConfig()
+logger_config.setup_logging()
 logger = logging.getLogger('main')
 
 
 def main():
     logger.info("Application started")
     try:
-        logger.info("Database module is running")
-        DatabaseManager()
-        logger.info("GUI build module is running")
-        MainWindow()
-
+        app = ApplicationManager()
+        sys.exit(app.app.exec_())
+    except RuntimeError as e:
+        logger.error("Qt application error occurred", exc_info=True)
+    except SystemExit as e:
+        logger.info("System exit with code: %s", e.code)
     except Exception as e:
-        logger.error("An error occurred", exc_info=True)  # Corrected line
+        logger.error("An unexpected error occurred", exc_info=True)
+        raise  # Re-raise the exception after logging
     finally:
         logger.info("Application ended")
 

@@ -16,8 +16,8 @@
                 "sub_menu_items": [
                     {
                         "id": 1,
-                        "name": "Import Suggested Portfolio",
-                        "description": "Import Suggested Portfolio",
+                        "name": "Import ErsteMarket Assets",
+                        "description": "Import ErsteMarket Assets: In Excel format",
                         "available": true,
                         "sub_menu_items": []
                     },
@@ -93,6 +93,13 @@
                         "sub_menu_items": []
                     }
                 ]
+            },
+            {
+                "id": 4,
+                "name": "More",
+                "description": "More menu",
+                "available": true,
+                "sub_menu_items": []
             }
         ]
     }
