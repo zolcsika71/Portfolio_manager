@@ -29,7 +29,7 @@ def create_menu_action(name):
     Create a menu action with the given name.
 
     :param name: Name of the menu action.
-    :return: A function to be called when the menu action is triggered.
+    :return: A function is to be called when the menu action is triggered.
     """
 
     def menu_action():
@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         """
         super().__init__()
         self.setWindowTitle('Portfolio Manager')
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 1024, 768)
         set_styling(self)
         menu_bar = self.menuBar()
         self.create_menus(menu_bar, menu_structure)
@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         """
         Create menus dynamically from the given structure.
 
-        :param menu_bar: The main menu bar.
+        :param menu_bar: The main menu.
         :param menu_structure: Dictionary containing the menu structure.
         """
         logger.info("Creating menus")
@@ -80,10 +80,10 @@ class MainWindow(QMainWindow):
 
     def add_sub_menus(self, parent_menu, sub_menu_items):
         """
-        Add sub-menus to a parent menu.
+        Add submenus to a parent menu.
 
-        :param parent_menu: The parent menu to which sub-menus will be added.
-        :param sub_menu_items: List of sub-menu items.
+        :param parent_menu: The parent menu to which submenus will be added.
+        :param sub_menu_items: List of submenu items.
         """
         logger.info("Adding sub-menus")
         for sub_menu in sub_menu_items:

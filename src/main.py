@@ -4,7 +4,6 @@ from app_manager import ApplicationManager
 from logger.logging_config import LoggerConfig
 import logging
 import sys
-from PyQt5.QtCore import QCoreApplication
 
 # Setup logging
 logger_config = LoggerConfig()
