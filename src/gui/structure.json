@@ -16,7 +16,7 @@
                 "sub_menu_items": [
                     {
                         "id": 1,
-                        "name": "Import ErsteMarket Assets",
+                        "name": "Import Erste Market Assets",
                         "description": "Import ErsteMarket Assets: In Excel format",
                         "available": true,
                         "sub_menu_items": []
@@ -73,14 +73,14 @@
                         "sub_menu_items": [
                             {
                                 "id": 1,
-                                "name": "Recreate DB /A",
-                                "description": "Recreate DB /A",
+                                "name": "Recreate DB A",
+                                "description": "Recreate DB A",
                                 "available": true
                             },
                             {
                                 "id": 2,
-                                "name": "Recreate DB /B",
-                                "description": "Recreate DB /B",
+                                "name": "Recreate DB B",
+                                "description": "Recreate DB B",
                                 "available": true
                             }
                         ]
